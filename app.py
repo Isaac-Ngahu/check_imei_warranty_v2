@@ -342,7 +342,7 @@ def create_job_record(job_id, total):
 
     conn.execute("""
         INSERT INTO jobs_v2(
-              id,
+            id,
             status,
             total
         )
@@ -2683,10 +2683,22 @@ def main():
 
 # if __name__ == "__main__":
 #     main()
+try:
+    print("[STARTUP] Creating CSV files...")
+    create_csv_if_missing()
 
-create_csv_if_missing()
-init_db()
-recover_interrupted_jobs()
+    print("[STARTUP] Initializing database...")
+    init_db()
+
+    print("[STARTUP] Recovering interrupted jobs...")
+    recover_interrupted_jobs()
+
+    print("[STARTUP] Application initialization complete.")
+
+except Exception:
+    import traceback
+    traceback.print_exc()
+    raise
 
 if __name__ == "__main__":
     # create_csv_if_missing()
