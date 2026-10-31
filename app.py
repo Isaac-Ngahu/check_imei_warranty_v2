@@ -341,7 +341,7 @@ def create_job_record(job_id, total):
     conn = get_db()
 
     conn.execute("""
-        INSERT INTO jobs_v2()
+        INSERT INTO jobs_v2(
               id,
             status,
             total
@@ -1622,29 +1622,61 @@ def read_csv_column(filepath):
 #             writer = csv.writer(file)
 #             writer.writerow([imei, processed_at])
 
+# def record_result(imei, status, processed_at, job_id=None):
+#     """Save results to a batch-specific CSV, or global CSV if no batch."""
+
+#     if job_id:
+#         active_csv, results_csv = get_batch_paths(job_id)
+#     else:
+#         active_csv, results_csv = ACTIVE_CSV, RESULTS_CSV
+
+#     existing_results = read_csv_column(results_csv)
+
+#     if imei not in existing_results:
+#         with open(
+#             results_csv, "a", newline="", encoding="utf-8-sig"
+#         ) as file:
+#             csv.writer(file).writerow([imei, status, processed_at])
+
+#     existing_active = read_csv_column(active_csv)
+
+#     if status == "Under warranty" and imei not in existing_active:
+#         with open(
+#             active_csv, "a", newline="", encoding="utf-8-sig"
+#         ) as file:
+#             csv.writer(file).writerow([imei, processed_at])
+
+
 def record_result(imei, status, processed_at, job_id=None):
-    """Save results to a batch-specific CSV, or global CSV if no batch."""
 
     if job_id:
         active_csv, results_csv = get_batch_paths(job_id)
     else:
         active_csv, results_csv = ACTIVE_CSV, RESULTS_CSV
 
-    existing_results = read_csv_column(results_csv)
+    with open(
+        results_csv,
+        "a",
+        newline="",
+        encoding="utf-8-sig"
+    ) as file:
+        csv.writer(file).writerow([
+            imei,
+            status,
+            processed_at
+        ])
 
-    if imei not in existing_results:
+    if status == "Under warranty":
         with open(
-            results_csv, "a", newline="", encoding="utf-8-sig"
+            active_csv,
+            "a",
+            newline="",
+            encoding="utf-8-sig"
         ) as file:
-            csv.writer(file).writerow([imei, status, processed_at])
-
-    existing_active = read_csv_column(active_csv)
-
-    if status == "Under warranty" and imei not in existing_active:
-        with open(
-            active_csv, "a", newline="", encoding="utf-8-sig"
-        ) as file:
-            csv.writer(file).writerow([imei, processed_at])
+            csv.writer(file).writerow([
+                imei,
+                processed_at
+            ])
 
 
 
