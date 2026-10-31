@@ -341,7 +341,7 @@ def create_job_record(job_id, total):
     conn = get_db()
 
     conn.execute("""
-        INSERT INTO jobs_v2
+        INSERT INTO jobs_v2()
               id,
             status,
             total
@@ -1452,7 +1452,7 @@ def get_warranty_job(job_id):
         **result,
         "active_csv": str(active_csv),
         "results_csv": str(results_csv)
-        }),409
+        }),202
     
 
 
@@ -2307,7 +2307,7 @@ def restart_application():
     # Check the existing job database before restarting the service.
     db_path = os.path.join(
         os.path.dirname(os.path.abspath(__file__)),
-        "jobs.db",
+        "jobs_v2.db",
     )
 
     try:
