@@ -322,7 +322,7 @@ def get_db():
 def init_db():
     conn = get_db()
     conn.execute("""
-    CREATE TABLE IF NOT EXISTS jobs_v2
+    CREATE TABLE IF NOT EXISTS jobs_v2(
     id TEXT PRIMARY KEY,
     status TEXT NOT NULL,
     total INTEGER NOT NULL,
