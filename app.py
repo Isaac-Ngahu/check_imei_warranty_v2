@@ -312,7 +312,7 @@ def restart_railway_deployment():
 
 #------------------------------db configs---------------------------#
 import sqlite3
-DB_FILE = os.path.join(BASE_DIR, "jobs.db")
+DB_FILE = os.path.join(BASE_DIR, "jobs_v2.db")
 
 def get_db():
     conn = sqlite3.connect(DB_FILE)
@@ -1085,7 +1085,7 @@ def recover_interrupted_jobs():
     conn = get_db()
 
     conn.execute("""
-        UPDATE jobs
+        UPDATE jobs_v2
         SET status = 'interrupted',
             completed_at = CURRENT_TIMESTAMP
         WHERE status IN ('queued', 'running')
@@ -1110,7 +1110,7 @@ def list_jobs():
 
     rows = conn.execute("""
         SELECT *
-        FROM jobs
+        FROM jobs_v2
         ORDER BY created_at DESC
     """).fetchall()
 
@@ -1272,7 +1272,7 @@ def stop_warranty_job(job_id):
         row = conn.execute(
             """
             SELECT status
-            FROM jobs
+            FROM jobs_v2
             WHERE id = ?
             """,
             (job_id,)
@@ -1420,7 +1420,7 @@ def get_warranty_job(job_id):
 
     job = conn.execute("""
     SELECT *
-    FROM jobs
+    FROM jobs_v2
     WHERE id = ?
     """, (job_id,)).fetchone()
 
@@ -2314,7 +2314,7 @@ def restart_application():
         with sqlite3.connect(db_path, timeout=5) as conn:
             active_job = conn.execute("""
                 SELECT id, status
-                FROM jobs
+                FROM jobs_v2
                 WHERE LOWER(status) IN ('queued', 'running', 'stopping')
                 LIMIT 1
             """).fetchone()
